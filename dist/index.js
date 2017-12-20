@@ -130,14 +130,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function processRequireCall(path) {
   var dependencyString = path.node.arguments[0].value;
-  path.replaceWith(_babelCore.types.logicalExpression('||', _babelCore.types.CallExpression(_babelCore.types.identifier('__getInjection'), [_babelCore.types.stringLiteral(dependencyString)]), path.node));
+  path.replaceWith(_babelCore.types.expressionStatement(_babelCore.types.conditionalExpression(_babelCore.types.callExpression(_babelCore.types.memberExpression(_babelCore.types.identifier('__injections'), _babelCore.types.identifier('hasOwnProperty'), false), [_babelCore.types.stringLiteral(dependencyString)]), _babelCore.types.memberExpression(_babelCore.types.identifier('__injections'), _babelCore.types.stringLiteral(dependencyString), true), path.node)));
 
   return dependencyString;
 }
 
 function injectify(context, source, inputSourceMap) {
   var _transform = (0, _babelCore.transform)(source, {
-    babelrc: false,
+    babelrc: true,
     code: false,
     compact: false,
     filename: context.resourcePath
@@ -167,7 +167,7 @@ function injectify(context, source, inputSourceMap) {
     sourceMaps: context.sourceMap,
     sourceFileName: context.resourcePath,
     inputSourceMap: inputSourceMap,
-    babelrc: false,
+    babelrc: true,
     compact: false,
     filename: context.resourcePath
   });
@@ -187,7 +187,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _babelCore = __webpack_require__(0);
 
-exports.default = (0, _babelCore.template)('\n  module.exports = function __injector(__injections) {\n    __injections = __injections || {};\n\n    (function __validateInjection() {\n      var validDependencies = DEPENDENCIES;\n      var injectedDependencies = Object.keys(__injections);\n      var invalidInjectedDependencies = injectedDependencies.filter(function (dependency) {\n        return validDependencies.indexOf(dependency) === -1;\n      });\n\n      if (invalidInjectedDependencies.length > 0) {\n        var validDependenciesString = \'- \' + validDependencies.join(\'\\n- \');\n        var injectedDependenciesString = \'- \' + injectedDependencies.join(\'\\n- \');\n        var invalidDependenciesString = \'- \' + invalidInjectedDependencies.join(\'\\n- \');\n\n        throw new Error(\'Some of the injections you passed in are invalid.\\n\' +\n          \'Valid injection targets for this module are:\\n\' + validDependenciesString + \'\\n\' +\n          \'The following injections were passed in:\\n\' + injectedDependenciesString + \'\\n\' +\n          \'The following injections are invalid:\\n\' + invalidDependenciesString + \'\\n\'\n        );\n      }\n    })();\n\n    var module = { exports: {} };\n    var exports = module.exports;\n\n    function __getInjection(dependency) {\n      return __injections.hasOwnProperty(dependency) ? __injections[dependency] : null;\n    }\n\n    (function () {\n      SOURCE\n    })();\n\n    return module.exports;\n  }\n');
+exports.default = (0, _babelCore.template)('\n  module.exports = function __injector(__injections) {\n    __injections = __injections || {};\n\n    (function __validateInjection() {\n      var validDependencies = DEPENDENCIES;\n      var injectedDependencies = Object.keys(__injections);\n      var invalidInjectedDependencies = injectedDependencies.filter(function (dependency) {\n        return validDependencies.indexOf(dependency) === -1;\n      });\n\n      if (invalidInjectedDependencies.length > 0) {\n        var validDependenciesString = \'- \' + validDependencies.join(\'\\n- \');\n        var injectedDependenciesString = \'- \' + injectedDependencies.join(\'\\n- \');\n        var invalidDependenciesString = \'- \' + invalidInjectedDependencies.join(\'\\n- \');\n\n        throw new Error(\'Some of the injections you passed in are invalid.\\n\' +\n          \'Valid injection targets for this module are:\\n\' + validDependenciesString + \'\\n\' +\n          \'The following injections were passed in:\\n\' + injectedDependenciesString + \'\\n\' +\n          \'The following injections are invalid:\\n\' + invalidDependenciesString + \'\\n\'\n        );\n      }\n    })();\n\n    var module = { exports: {} };\n    var exports = module.exports;\n\n    (function () {\n      SOURCE\n    })();\n\n    return module.exports;\n  }\n');
 module.exports = exports['default'];
 
 /***/ })

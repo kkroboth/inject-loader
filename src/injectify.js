@@ -30,8 +30,9 @@ function processRequireCall(path) {
 }
 
 export default function injectify(context, source, inputSourceMap) {
+  debugger;
   const { ast } = transform(source, {
-    babelrc: false,
+    babelrc: true,
     code: false,
     compact: false,
     filename: context.resourcePath,
@@ -63,7 +64,7 @@ export default function injectify(context, source, inputSourceMap) {
     sourceMaps: context.sourceMap,
     sourceFileName: context.resourcePath,
     inputSourceMap,
-    babelrc: false,
+    babelrc: true,
     compact: false,
     filename: context.resourcePath,
   });
